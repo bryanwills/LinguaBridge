@@ -1,26 +1,107 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  LinguaBridge tokens.
+  Dark is the default experience; light is the alternate.
+  Two language hues encode speaker language in captions:
+  amber = Spanish, sky = English. Used for meaning, not decoration.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fbfaf8;
+  --surface: #ffffff;
+  --surface-2: #f1efe9;
+  --foreground: #1b2430;
+  --muted: #5d6b7a;
+  --line: rgba(27, 36, 48, 0.12);
+  --accent: #b4690e;
+  --accent-contrast: #ffffff;
+  --lang-es: #a3590a;
+  --lang-en: #1c64ad;
+  --scrim: rgba(20, 26, 34, 0.82);
+  --live: #2f9e62;
+}
+
+.dark {
+  --background: #0a0e13;
+  --surface: #10161d;
+  --surface-2: #161e27;
+  --foreground: #e9eef4;
+  --muted: #94a2b1;
+  --line: rgba(233, 238, 244, 0.1);
+  --accent: #f0b254;
+  --accent-contrast: #1d1405;
+  --lang-es: #f2b05e;
+  --lang-en: #7db8f0;
+  --scrim: rgba(6, 9, 13, 0.78);
+  --live: #4ade80;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-lang-es: var(--lang-es);
+  --color-lang-en: var(--lang-en);
+  --color-live: var(--live);
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+  --font-display: "Fraunces Variable", Georgia, serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 72;
+}
+
+.caption-scrim {
+  background: var(--scrim);
+  backdrop-filter: blur(6px);
+}
+
+@keyframes pulse-live {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.live-dot {
+  animation: pulse-live 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .live-dot {
+    animation: none;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }

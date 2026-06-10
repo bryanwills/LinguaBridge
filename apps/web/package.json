@@ -11,12 +11,14 @@
     "test": "echo \"no tests yet\" && exit 0"
   },
   "dependencies": {
+    "@fontsource-variable/fraunces": "^5.2.9",
     "@hookform/resolvers": "^5.4.0",
     "@linguabridge/shared": "workspace:*",
     "@livekit/components-react": "^2.9.21",
     "@livekit/components-styles": "^1.2.0",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.108.0",
+    "geist": "^1.7.2",
     "livekit-client": "^2.19.2",
     "livekit-server-sdk": "^2.15.4",
     "lucide-react": "^1.17.0",
