@@ -1,0 +1,7 @@
+{
+  "name": "@linguabridge/config",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared TypeScript, ESLint, and Prettier configuration.",
+  "files": ["tsconfig.base.json"]
+}

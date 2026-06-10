@@ -1,0 +1,27 @@
+{
+  "name": "@linguabridge/worker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "LiveKit agent that streams room audio to an AI provider and publishes translated caption events.",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "start": "tsx src/main.ts",
+    "build": "tsc --noEmit",
+    "lint": "echo \"lint handled at app level\" && exit 0",
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"no tests yet\" && exit 0"
+  },
+  "dependencies": {
+    "@linguabridge/shared": "workspace:*",
+    "dotenv": "^16.5.0",
+    "livekit-server-sdk": "^2.13.0",
+    "pino": "^9.7.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.8.3"
+  }
+}
