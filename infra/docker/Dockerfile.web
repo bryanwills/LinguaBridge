@@ -1,0 +1,53 @@
+# LinguaBridge web app — production image.
+# Build from the repo root:
+#   docker compose -f infra/docker/docker-compose.prod.yml build
+
+FROM node:24-alpine AS base
+RUN npm install -g pnpm@11
+WORKDIR /repo
+
+# ---- Install dependencies (cached unless lockfile/manifests change) ----
+FROM base AS deps
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY apps/web/package.json apps/web/
+COPY packages/shared/package.json packages/shared/
+COPY packages/config/package.json packages/config/
+RUN pnpm install --frozen-lockfile --filter @linguabridge/web... --filter linguabridge
+
+# ---- Build ----
+FROM base AS build
+COPY --from=deps /repo /repo
+COPY . .
+
+# NEXT_PUBLIC_* values are inlined into the client bundle at build time,
+# so they must be supplied as build args (see docker-compose.prod.yml).
+ARG NEXT_PUBLIC_APP_URL
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ARG NEXT_PUBLIC_LIVEKIT_URL
+ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL \
+    NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL \
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY \
+    NEXT_PUBLIC_LIVEKIT_URL=$NEXT_PUBLIC_LIVEKIT_URL \
+    NEXT_TELEMETRY_DISABLED=1
+
+RUN pnpm --filter @linguabridge/web build
+
+# ---- Runtime ----
+FROM node:24-alpine AS runner
+ENV NODE_ENV=production \
+    PORT=3000 \
+    HOSTNAME=0.0.0.0 \
+    NEXT_TELEMETRY_DISABLED=1
+WORKDIR /app
+
+RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
+
+# Standalone output keeps the monorepo layout: server.js lives at apps/web/.
+COPY --from=build --chown=nextjs:nodejs /repo/apps/web/.next/standalone ./
+COPY --from=build --chown=nextjs:nodejs /repo/apps/web/.next/static ./apps/web/.next/static
+COPY --from=build --chown=nextjs:nodejs /repo/apps/web/public ./apps/web/public
+
+USER nextjs
+EXPOSE 3000
+CMD ["node", "apps/web/server.js"]
