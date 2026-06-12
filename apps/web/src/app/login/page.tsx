@@ -1,11 +1,18 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme/ThemeToggle.client";
+import { LoginForm } from "@/components/auth/LoginForm.client";
 
-/**
- * Placeholder until feature/auth-dashboard lands (Phase 1):
- * Google, Facebook, and email/magic-link sign-in via Supabase Auth.
- */
-export default function LoginPage() {
+export const metadata = {
+  title: "Sign in — LinguaBridge",
+};
+
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const { next } = await searchParams;
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5">
@@ -17,24 +24,28 @@ export default function LoginPage() {
         </Link>
         <ThemeToggle />
       </header>
-      <main className="flex flex-1 items-center justify-center px-5">
-        <div className="w-full max-w-sm rounded-2xl border border-line bg-surface p-8 text-center">
-          <h1 className="font-display text-2xl font-semibold tracking-tight">
-            Sign in
+      <main className="flex flex-1 items-center justify-center px-5 pb-16">
+        <div className="w-full max-w-sm">
+          <h1 className="text-center font-display text-3xl font-semibold tracking-tight">
+            Welcome
           </h1>
-          <p className="mt-3 text-sm leading-relaxed text-muted">
-            Authentication arrives in the{" "}
-            <code className="rounded bg-surface-2 px-1.5 py-0.5 text-xs">
-              feature/auth-dashboard
-            </code>{" "}
-            branch: Google, Facebook, and email magic links via Supabase.
+          <p className="mt-2 text-center text-sm text-muted">
+            Sign in to create rooms and start translated calls.
           </p>
-          <Link
-            href="/"
-            className="mt-6 inline-block rounded-full border border-line px-5 py-2 text-sm text-muted transition-colors hover:border-accent hover:text-foreground"
-          >
-            Back to home
-          </Link>
+          <div className="mt-8 rounded-2xl border border-line bg-surface p-6 sm:p-8">
+            <LoginForm nextPath={next} />
+          </div>
+          <p className="mt-6 text-center text-xs leading-relaxed text-muted">
+            By continuing you agree to the{" "}
+            <Link href="/terms" className="underline hover:text-foreground">
+              terms
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy" className="underline hover:text-foreground">
+              privacy policy
+            </Link>
+            .
+          </p>
         </div>
       </main>
     </div>
