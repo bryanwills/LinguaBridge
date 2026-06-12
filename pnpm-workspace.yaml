@@ -11,3 +11,7 @@ onlyBuiltDependencies:
   - esbuild
   - sharp
   - unrs-resolver
+
+# Security: Dependabot alert — PostCSS XSS in stringify output (< 8.5.10)
+overrides:
+  postcss: ">=8.5.10"
