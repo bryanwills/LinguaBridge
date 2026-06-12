@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { requireUser, getOrCreateProfile } from "@/lib/auth/user";
 import { SettingsForm } from "@/components/auth/SettingsForm.client";
 
@@ -11,7 +13,14 @@ export default async function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-lg">
-      <h1 className="font-display text-3xl font-semibold tracking-tight">
+      <Link
+        href="/dashboard"
+        className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-accent"
+      >
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+        Back to dashboard
+      </Link>
+      <h1 className="mt-4 font-display text-3xl font-semibold tracking-tight">
         Settings
       </h1>
       <p className="mt-2 text-sm text-muted">
