@@ -20,6 +20,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
       className={`${GeistSans.variable} ${GeistMono.variable} h-full antialiased`}
     >
       {/* suppressHydrationWarning: browser extensions (e.g. Video Speed Controller) inject classes into <body> before hydration */}

@@ -67,14 +67,26 @@ export function LoginForm({ nextPath }: { nextPath?: string }) {
   async function signInWithProvider(provider: "google" | "facebook") {
     setStatus({ kind: "loading", action: provider });
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: callbackUrl("/auth/callback") },
+      options: {
+        redirectTo: callbackUrl("/auth/callback"),
+        // Some mobile browsers are more reliable with explicit navigation.
+        skipBrowserRedirect: true,
+      },
     });
     if (error) {
       setStatus({ kind: "error", message: error.message });
+      return;
     }
-    // On success the browser navigates away; no state update needed.
+    if (data?.url) {
+      window.location.assign(data.url);
+      return;
+    }
+    setStatus({
+      kind: "error",
+      message: "Could not start OAuth sign-in. Check provider configuration.",
+    });
   }
 
   async function handlePasswordSubmit(event: React.FormEvent) {
@@ -170,7 +182,11 @@ export function LoginForm({ nextPath }: { nextPath?: string }) {
         <span className="h-px flex-1 bg-line" />
       </div>
 
-      <form onSubmit={handlePasswordSubmit} className="grid gap-3">
+      <form
+        onSubmit={handlePasswordSubmit}
+        className="grid gap-3"
+        suppressHydrationWarning
+      >
         <label className="grid gap-1.5 text-sm">
           <span className="text-muted">Email</span>
           <input
@@ -180,6 +196,7 @@ export function LoginForm({ nextPath }: { nextPath?: string }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
+            suppressHydrationWarning
             className={inputClass}
           />
         </label>
@@ -195,6 +212,7 @@ export function LoginForm({ nextPath }: { nextPath?: string }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="At least 8 characters"
+            suppressHydrationWarning
             className={inputClass}
           />
         </label>
