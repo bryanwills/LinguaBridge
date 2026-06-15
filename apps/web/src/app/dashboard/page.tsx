@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Video, Settings, Languages } from "lucide-react";
+import { Users, Settings, Languages } from "lucide-react";
 import { languageLabel } from "@linguabridge/shared";
 import { requireUser, getOrCreateProfile } from "@/lib/auth/user";
 
@@ -28,19 +28,22 @@ export default async function DashboardPage() {
       </p>
 
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div className="rounded-2xl border border-dashed border-line bg-surface p-6">
-          <Video className="h-5 w-5 text-muted" aria-hidden="true" />
+        <Link
+          href="/dashboard/friends"
+          className="group rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-accent"
+        >
+          <Users
+            className="h-5 w-5 text-muted transition-colors group-hover:text-accent"
+            aria-hidden="true"
+          />
           <h2 className="mt-3 font-display text-lg font-semibold">
-            Translation rooms
+            Friends &amp; calls
           </h2>
           <p className="mt-1.5 text-sm leading-relaxed text-muted">
-            Create a room and share one invite link. Coming in the next phase
-            (<code className="rounded bg-surface-2 px-1 py-0.5 text-xs">
-              feature/room-model
-            </code>
-            ).
+            Add a registered friend by email, then start a translated video call
+            in one click.
           </p>
-        </div>
+        </Link>
 
         <Link
           href="/dashboard/settings"
