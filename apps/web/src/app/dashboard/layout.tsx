@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { LogOut, Settings } from "lucide-react";
+import { History, LogOut, Settings, Users } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/ThemeToggle.client";
+import { IncomingCallListener } from "@/components/call/IncomingCallListener.client";
 import { signOut } from "@/app/auth/actions";
 import { requireUser } from "@/lib/auth/user";
 
@@ -9,10 +10,11 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  await requireUser();
+  const user = await requireUser();
 
   return (
     <div className="flex min-h-screen flex-col">
+      <IncomingCallListener userId={user.id} />
       <header className="border-b border-line">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4">
           <Link
@@ -22,6 +24,20 @@ export default async function DashboardLayout({
             Lingua<span className="text-accent">Bridge</span>
           </Link>
           <nav className="flex items-center gap-2">
+            <Link
+              href="/dashboard/friends"
+              className="inline-flex h-9 items-center gap-2 rounded-full border border-line px-4 text-sm text-muted transition-colors hover:border-accent hover:text-foreground"
+            >
+              <Users className="h-4 w-4" aria-hidden="true" />
+              Friends
+            </Link>
+            <Link
+              href="/dashboard/calls"
+              className="inline-flex h-9 items-center gap-2 rounded-full border border-line px-4 text-sm text-muted transition-colors hover:border-accent hover:text-foreground"
+            >
+              <History className="h-4 w-4" aria-hidden="true" />
+              History
+            </Link>
             <Link
               href="/dashboard/settings"
               className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-line text-muted transition-colors hover:border-accent hover:text-accent"
