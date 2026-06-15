@@ -8,6 +8,17 @@ const PROTECTED_PREFIXES = ["/dashboard"];
  * gates protected routes. Used by the root proxy.ts (Next.js 16 convention).
  */
 export async function updateSession(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const needsAuth = PROTECTED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+  const shouldCheckAuth = needsAuth || pathname === "/login";
+
+  // Fast path: don't hit Supabase for public pages.
+  if (!shouldCheckAuth) {
+    return NextResponse.next({ request });
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -33,13 +44,15 @@ export async function updateSession(request: NextRequest) {
 
   // Do not run code between client creation and getClaims();
   // it can cause hard-to-debug random logouts.
-  const { data } = await supabase.auth.getClaims();
-  const isAuthenticated = Boolean(data?.claims);
-  const { pathname } = request.nextUrl;
-
-  const needsAuth = PROTECTED_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
-  );
+  let isAuthenticated = false;
+  try {
+    const { data } = await supabase.auth.getClaims();
+    isAuthenticated = Boolean(data?.claims);
+  } catch {
+    // Network hiccups to Supabase Auth shouldn't 500 public navigation.
+    // We keep default unauthenticated behavior below.
+    isAuthenticated = false;
+  }
 
   if (needsAuth && !isAuthenticated) {
     const url = request.nextUrl.clone();

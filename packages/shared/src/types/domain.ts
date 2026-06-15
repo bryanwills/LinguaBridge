@@ -31,3 +31,14 @@ export interface RoomSettings {
 
 export const MAX_RETENTION_DAYS = 30;
 export const DEFAULT_RETENTION_DAYS = 30;
+
+/** Friend connection lifecycle (see friendships table). */
+export type FriendshipStatus = "pending" | "accepted" | "declined" | "blocked";
+
+/** Live call signaling lifecycle (see call_invitations table). */
+export type CallInvitationStatus =
+  | "ringing"
+  | "accepted"
+  | "declined"
+  | "cancelled"
+  | "missed";
